@@ -1,0 +1,18 @@
+{
+	"input":
+	{
+		"pathSrc": "F:\\LGTool\\pushpullboard\\com.webos.app.home\\qml2",
+		"pathBoard": "",
+		"serviceSelect": "com.webos.app.test",
+		"webOsSelect": "webos",
+		"boardIP": "127.0.0.1",
+		"boardUser": "root",
+		"boardPort": "6622",
+		"inputOther": "input"
+	},
+	"info":
+	{
+		"tag": "",
+		"tagOther": "tag"
+	}
+}

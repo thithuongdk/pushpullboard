@@ -1,0 +1,18 @@
+{
+	"input":
+	{
+		"pathSrc": "",
+		"pathBoard": "",
+		"serviceSelect": "com.webos.app.home",
+		"webOsSelect": "webos",
+		"boardIP": "192.168.105.100",
+		"boardUser": "root",
+		"boardPort": "22",
+		"inputOther": "input"
+	},
+	"info":
+	{
+		"tag": "",
+		"tagOther": "tag"
+	}
+}

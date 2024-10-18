@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Push qml</title>
+    <HTA:APPLICATION
+        ID="oHTA"
+        APPLICATIONNAME="CCC Tool"
+        BORDER="thin"
+        BORDERSTYLE="normal"
+        CAPTION="yes"
+        ICON=""
+        MAXIMIZEBUTTON="yes"
+        MINIMIZEBUTTON="yes"
+        SHOWINTASKBAR="yes"
+        SINGLEINSTANCE="yes"
+        SYSMENU="yes"
+        VERSION="1.0"
+        SCROLL="no"
+        RESIZE="no"
+        WINDOWSTATE="normal"/>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href=".\src\styles.css">
+    <script language="JavaScript" src=".\src\view.js"></script>
+    <script language="JavaScript" src=".\src\common.js"></script>
+    <script language="JavaScript" src=".\src\pushqml.js"></script>
+</head>
+<body>
+    <div class="toolBoxView">
+        <div class="configframe">
+            <table id="configTable">
+                <tr>
+                    <td>
+                        <label for="serviceSelect">App:</label>
+                        <select class="selectInput" id="serviceSelect" onchange="applySelected()"></select>
+                        <label for="webOsSelect">Webos:</label>
+                        <select class="selectInput" id="webOsSelect" onchange="saveInfo()">
+                            <option value="webos">webos (ccic)</option>
+                            <option value="webos1">webos 1 right monitor (ccrc)</option>
+                            <option value="webos2">webos 2 left monitor (ccrc)</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="boardIP">IP:</label>
+                        <input class="textInput" type="text" id="boardIP" value=""/>
+                        <label for="boardUser">User:</label>
+                        <input class="textInput" type="text" id="boardUser" value=""/>
+                        <label for="boardPort">Port:</label>
+                        <input class="textInput" type="text" id="boardPort" value=""/>
+                        <button onclick="firstLogin()" title="input pw and edit keyauthen" id="firstLogin" class="bigButton">Connect</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="detailsframe">
+            <h2>push qml to Board</h2>
+            <table id="infoTable">
+                <tr>
+                    <td><label for="pathSrc">Local Source:</label></td>
+                    <td><input class="textInput" type="text" id="pathSrc" value=""/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <button onclick="copy2Local()" title="copy board to local" id="btnCP2Local" class="bigButton">↑</button>
+                        <button onclick="copy2Board()" title="delete all and copy to board" id="btnCP2Board" class="bigButton">↓</button>
+                        <button onclick="copy2BoardFast()" title="fast copy to board" id="btnCP2BoardFast" class="bigButton">↓↓</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="pathBoard">Board Source:</label></td>
+                    <td><input class="textInput" type="text" id="pathBoard" value=""/></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

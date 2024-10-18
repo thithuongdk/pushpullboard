@@ -1,0 +1,144 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding:    px;
+    background-color: #f4f7fa;
+    color: #333;
+    line-height: 1.6;
+    margin: 5px;
+}
+
+.toolBoxView {
+    background-color: #003366;
+    color: white;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.configframe {
+    margin: 5px;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.detailsframe {
+    margin: 5px;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+button#firstLogin {
+    height: 35px;
+    margin-left: 50px;
+    padding: 5px 5px
+}
+
+
+button#btnCP2Local {
+    margin-left: 15%;
+    background-color: #74879b;
+}
+
+
+.bigButton {
+    background-color: #00509e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    margin: 5px;
+}
+
+button:hover {
+    background-color: #003d73;
+    transform: scale(1.05);
+}
+
+h2, h3 {
+    color: #003366;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+input#boardIP {
+    width: 150px;
+}
+
+input#boardUser {
+    width: 50px;
+}
+
+input#boardPort {
+    width: 50px;
+}
+
+input#pathSrc, input#pathBoard {
+    width: 90%;
+}
+
+.textInput {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+select#serviceSelect {
+    width: 100px;
+}
+
+
+.selectInput {
+    width: 200px;
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+label {
+    color: #001a35;
+    font-style: normal;
+    font-weight: bold;
+    margin: 5px;
+}
+
+table {
+    margin: 0;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+td {
+    padding: 5px;
+}
+
+table#infoTable tr td:first-child {
+    width: 200px;
+}
+
+table#infoTable tr td:nth-child(2) {
+    width: 700px;
+    justify-content: center;
+    align-items: center;
+}
+
+/* table#configTable tr td:first-child {
+    width: 700px;
+}
+
+table#configTable tr td:nth-child(2) {
+    width: 100px;
+    justify-content: center;
+    align-items: center;
+} */
