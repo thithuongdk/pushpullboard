@@ -126,7 +126,9 @@ function RunCMDCommand(command) {
 
 function RunBashCommand(command) {
     var shell = new ActiveXObject("WScript.Shell");
-    var result = shell.Run('"' + pathGitBash.replace(/\\/g,"\\\\") + '" -c "' + command.replace(/\\/g,"\\\\").replace(/"/g,'\\"') + '"', 1, true)
+    var commandBash = '"' + pathGitBash.replace(/\\/g,'/') + '" -c "' + command.replace(/\\/g,'/').replace('"','\\"') + '"';
+    // alert("commandBash: " + commandBash)
+    var result = shell.Run(commandBash, 1, true);
     if (result !== 0) {
         alert("Command failed with exit code: " + result);
     }
@@ -134,7 +136,9 @@ function RunBashCommand(command) {
 
 function ExecBashCommand(command) {
     var shell = new ActiveXObject("WScript.Shell");
-    var exec = shell.Exec('"' + pathGitBash.replace(/\\/g,"\\\\") + '" -c "' + command.replace(/\\/g,"\\\\").replace(/"/g,'\\"') + '"');
+    var commandBash = '"' + pathGitBash.replace(/\\/g,'/') + '" -c "' + command.replace(/\\/g,'/').replace('"','\\"') + '"';
+    // alert("commandBash: " + commandBash)
+    var exec = shell.Exec(commandBash);
     var output = "";
     while (exec.Status === 0) {
     }

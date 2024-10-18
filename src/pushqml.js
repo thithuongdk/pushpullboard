@@ -116,8 +116,6 @@ function firstLogin() {
     var fileKnowHost = readFile(pathKnowHost).replace(new RegExp(".*" + boardIP + ".*"),'');
     writeFile(pathKnowHost, fileKnowHost);
     var command = "ssh -p " + boardPort + " " + boardUser + "@" + boardIP +" 'mkdir /home/root/.ssh; echo \'" + idRsaPub + "\' >> /home/root/.ssh/authorized_keys'";
-    alert("firstLogin:" + command);
-    // RunCMDCommand(command);
     RunBashCommand(command);
     alert("firstLogin");
 }
@@ -130,9 +128,8 @@ function copy2Local() {
     var pathSrc = document.getElementById("pathSrc").value;
     var webOsSelect = document.getElementById("webOsSelect").value;
     var pathHostBoard = pathHostBoardRaw.replace('[%WEBOS]',webOsSelect);
-    var command = "scp -P " + boardPort + " -r " + boardUser + "@" + boardIP +":" + pathHostBoard + " " + pathSrc + "";
-    alert("copy2Local:" + command);
-    RunCommand(command);
+    var command = "scp -O -P " + boardPort + " -r " + boardUser + "@" + boardIP +":" + pathHostBoard + " " + pathSrc + "";
+    RunBashCommand(command);
     alert("copy2Local");
 }
 
@@ -144,12 +141,10 @@ function copy2Board() {
     var pathSrc = document.getElementById("pathSrc").value;
     var webOsSelect = document.getElementById("webOsSelect").value;
     var pathHostBoard = pathHostBoardRaw.replace('[%WEBOS]',webOsSelect);
-    var commandRM = "ssh -p " + boardPort + " " + boardUser + "@" + boardIP +" rm -r " + pathHostBoard;
-    alert("copy2Board:" + commandRM);
-    RunCommand(commandRM);
-    var commandCP = "scp -P " + boardPort + " -r " + pathSrc + " "  + boardUser + "@" + boardIP +":" + pathHostBoard;
-    alert("copy2Board:" + commandCP);
-    RunCommand(commandCP);
+    var commandRM = "ssh -p " + boardPort + " " + boardUser + "@" + boardIP +" 'rm -r " + pathHostBoard + "'";
+    RunBashCommand(commandRM);
+    var commandCP = "scp -O -P " + boardPort + " -r " + pathSrc + " "  + boardUser + "@" + boardIP +":" + pathHostBoard;
+    RunBashCommand(commandCP);
     alert("copy2Board");
 }
 
@@ -161,8 +156,7 @@ function copy2BoardFast() {
     var pathSrc = document.getElementById("pathSrc").value;
     var webOsSelect = document.getElementById("webOsSelect").value;
     var pathHostBoard = pathHostBoardRaw.replace('[%WEBOS]',webOsSelect);
-    var command = "scp -P " + boardPort + " -r " + pathSrc + " "  + boardUser + "@" + boardIP +":" + pathHostBoard;
-    alert("copy2BoardFast:" + command);
-    RunCommand(command);
+    var command = "scp -O -P " + boardPort + " -r " + pathSrc + " "  + boardUser + "@" + boardIP +":" + pathHostBoard;
+    RunBashCommand(command);
     return true;
 }
