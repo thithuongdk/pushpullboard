@@ -1,22 +1,29 @@
 {
-	"pathGitBash": "C:\\Program Files\\Git\\bin\\bash.exe",
-	"pathGitBash64": "C:\\Program Files (x86)\\Git\\bin\\bash.exe",
-	"pathKnowHost": "C:\\Users\\[%USER]\\.ssh\\known_hosts",
-	"pathIdRsaPub": "C:\\Users\\[%USER]\\.ssh\\id_rsa.pub",
-	"pathAuthenkey": "~/.ssh/authorized_keys",
+	"pathGitBash": "C:/Program Files/Git/bin/bash.exe",
+	"pathGitBash64": "C:/Program Files (x86)/Git/bin/bash.exe",
+	"pathKnowHost": "C:/Users/[%1]/.ssh/known_hosts",
+	"pathIdRsaPub": "C:/Users/[%1]/.ssh/id_rsa.pub",
+	"pathBoardSSHfolder": "/home/[%1]/.ssh",
+	"pathBoardAuthenkey": "/home/[%1]/.ssh/authorized_keys",
+	"pathLogCCOS": "/log_data/[%1]/codetmp",
+	"pathLogWEBOS": "/var/log/codetmp",
 	"service":
 	[
 		{
 			"name": "HOME",
 			"serviceName": "com.webos.app.home",
-			"pathHostBoard": "/log_data/[%WEBOS]/codetmp",
-			"qmlPathWebosBoard": "/usr/palm/applications/com.webos.app.home/qml/"
+			"pathLogCCOSHomeLog": "/log_data/[%1]/home",
+			"pathLogCCOSMessageLog": "/log_data/[%1]/messager",
+			"pathBoard": "/usr/palm/com.webos.app.home",
+			"folderQml": "/qml"
 		},
 		{
 			"name": "TEST",
 			"serviceName": "com.webos.app.test",
-			"pathHostBoard": "/var/test/[%WEBOS]/codetmp",
-			"qmlPathWebosBoard": "/var/test/com.webos.app.home/qml/"
+			"pathLogCCOSHomeLog": "/log_data/[%1]/home",
+			"pathLogCCOSMessageLog": "/log_data/[%1]/messager",
+			"pathBoard": "/var/test/com.webos.app.home",
+			"folderQml": "/qml"
 		}
 	]
 }

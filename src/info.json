@@ -1,11 +1,11 @@
 {
 	"input":
 	{
-		"pathSrc": "F:\\LGTool\\pushpullboard\\com.webos.app.home\\qml2",
-		"pathBoard": "",
-		"serviceSelect": "com.webos.app.test",
+		"serviceSelect": "com.webos.app.home",
 		"webOsSelect": "webos",
-		"boardIP": "127.0.0.1",
+		"pathSrc": "",
+		"pathBoard": "/usr/palm/com.webos.app.home",
+		"boardIP": "192.168.1.202",
 		"boardUser": "root",
 		"boardPort": "6622",
 		"inputOther": "input"

@@ -124,10 +124,29 @@ function RunCMDCommand(command) {
     }
 }
 
+function RunBashScpCommand(port, src, des) {
+    RunBashCommand("scp -O -P " + port + " -r " + " " + src + " " + des);
+}
+
+function RunBashSSHCommand(command, ip, user, port) {
+    if(ip===undefined) {
+        ip = document.getElementById("boardIP").value;
+        user = document.getElementById("boardUser").value;
+        port = document.getElementById("boardPort").value;
+    }
+    if(user=="") {
+        user = "root";
+    }
+    if(port=="") {
+        port = "22";
+    }
+    RunBashCommand("ssh -p " + port + " " + user + "@" + ip +" '" + command + "'");
+}
+
 function RunBashCommand(command) {
     var shell = new ActiveXObject("WScript.Shell");
-    var commandBash = '"' + pathGitBash.replace(/\\/g,'/') + '" -c "' + command.replace(/\\/g,'/').replace('"','\\"') + '"';
-    // alert("commandBash: " + commandBash)
+    var commandBash = '"' + pathGitBash + '" -c "' + command + '"';
+    alert("commandBash: " + commandBash)
     var result = shell.Run(commandBash, 1, true);
     if (result !== 0) {
         alert("Command failed with exit code: " + result);
@@ -136,7 +155,7 @@ function RunBashCommand(command) {
 
 function ExecBashCommand(command) {
     var shell = new ActiveXObject("WScript.Shell");
-    var commandBash = '"' + pathGitBash.replace(/\\/g,'/') + '" -c "' + command.replace(/\\/g,'/').replace('"','\\"') + '"';
+    var commandBash = '"' + pathGitBash + '" -c "' + command + '"';
     // alert("commandBash: " + commandBash)
     var exec = shell.Exec(commandBash);
     var output = "";

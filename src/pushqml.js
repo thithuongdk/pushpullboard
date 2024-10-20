@@ -1,22 +1,25 @@
 var infoPath = ".\\src\\info.json";
 var pathConfig = ".\\config.json";
-var qmlPathSrc = "/qml/";
 var serviceSelect = "";
-var pathGitBash = "";
-var pathKnowHost = "C:\\Users\\[%USER]\\.ssh\\known_hosts";
-var pathIdRsaPub = "C:\\Users\\[%USER]\\.ssh\\id_rsa.pub";
-var pathAuthenkey = "~/.ssh/authorized_keys";
 var usename = "";
-var pathHostBoardRaw = "";
-// var jsonService = null;
-// var serviceName = "";
-// var webOsSelect = "";
-// var pathSrc = "";
-// var pathBoard = "";
+var serviceName = "com.webos.app.home";
+var pathBoard = "/var/test/com.webos.app.home";
+var pathLogCCOSHomeLog = "/log_data/[%1]/home";
+var pathLogCCOSMessageLog = "/log_data/[%1]/messager";
+
+var pathGitBash = "C:/Program Files/Git/bin/bash.exe";
+var pathGitBash64 = "C:/Program Files (x86)/Git/bin/bash.exe";
+var pathKnowHost = "C:/Users/[%1]/.ssh/known_hosts";
+var pathIdRsaPub = "C:/Users/[%1]/.ssh/id_rsa.pub";
+var pathBoardSSHfolder = "/home/[%1]/.ssh";
+var pathBoardAuthenkey = "/home/[%1]/.ssh/authorized_keys";
+var pathLogCCOS = "/log_data/[%1]/codetmp";
+var pathLogWEBOS = "/var/log/codetmp";
+var folder = "/qml";
 
 function OnInit() {
     var jsonContent = readJSONFile(infoPath);
-    var pathSrc = jsonContent.input.pathSrc.replace(/\\\\/g,"\\");
+    var pathSrc = jsonContent.input.pathSrc;
     if(folderExists(pathSrc)) {
         document.getElementById("pathSrc").value = pathSrc;
     } else {
@@ -24,13 +27,14 @@ function OnInit() {
     }
     document.getElementById("serviceSelect").value = jsonContent.input.serviceSelect;
     document.getElementById("webOsSelect").value = jsonContent.input.webOsSelect;
-    document.getElementById("pathBoard").value = jsonContent.input.pathBoard;
+    if(jsonContent.input.pathBoard!="") {
+        document.getElementById("pathBoard").value = jsonContent.input.pathBoard;
+    }
     document.getElementById("boardIP").value = jsonContent.input.boardIP;
     document.getElementById("boardUser").value = jsonContent.input.boardUser;
     document.getElementById("boardPort").value = jsonContent.input.boardPort;
-    usename = ExecCommand("whoami").split("\\")[1].replace('\r','').replace('\n','');
-    pathKnowHost = pathKnowHost.replace('[%USER]',usename);
-    pathIdRsaPub = pathIdRsaPub.replace('[%USER]',usename);
+    
+    usename = ExecCommand("whoami").replace(/\r|\n/g,'').split("\\").pop();
     return true;
 }
 
@@ -38,11 +42,14 @@ function saveInfo() {
     var inforfile = readFile(infoPath);
     inforfile = inforfile.replace(/"serviceSelect":.*,/g,'"serviceSelect": "' + document.getElementById("serviceSelect").value + '",');
     inforfile = inforfile.replace(/"webOsSelect":.*,/g,'"webOsSelect": "' + document.getElementById("webOsSelect").value + '",');
-    inforfile = inforfile.replace(/"pathSrc":.*,/g,'"pathSrc": "' + document.getElementById("pathSrc").value.replace(/\\/g,"\\\\") + '",');
+    inforfile = inforfile.replace(/"pathSrc":.*,/g,'"pathSrc": "' + document.getElementById("pathSrc").value.replace(/\\/g,'/') + '",');
+    if(document.getElementById("pathBoard").value!="") {
+        inforfile = inforfile.replace(/"pathBoard":.*,/g,'"pathBoard": "' + document.getElementById("pathBoard").value + '",');
+    }
     inforfile = inforfile.replace(/"boardIP":.*,/g,'"boardIP": "' + document.getElementById("boardIP").value + '",');
     inforfile = inforfile.replace(/"boardUser":.*,/g,'"boardUser": "' + document.getElementById("boardUser").value + '",');
     inforfile = inforfile.replace(/"boardPort":.*,/g,'"boardPort": "' + document.getElementById("boardPort").value + '",');
-    
+
     writeFile(infoPath, inforfile);
 }
 
@@ -66,6 +73,10 @@ function loadSelected() {
 
     pathKnowHost = jsonConfig.pathKnowHost;
     pathIdRsaPub = jsonConfig.pathIdRsaPub;
+    pathBoardSSHfolder = jsonConfig.pathBoardSSHfolder;
+    pathBoardAuthenkey = jsonConfig.pathBoardAuthenkey;
+    pathLogCCOS = jsonConfig.pathLogCCOS;
+    pathLogWEBOS = jsonConfig.pathLogWEBOS;
 
     if(jsonConfig.service.length>0) {
         jsonService = jsonConfig.service[0];
@@ -90,14 +101,21 @@ function applySelected() {
         if(jsonConfig.service[i].serviceName == serviceName) {
             jsonService = jsonConfig.service[i];
             serviceSelect = serviceName;
-            document.getElementById("pathBoard").value = jsonService.qmlPathWebosBoard;
-            pathHostBoardRaw = jsonService.pathHostBoard;
-            alert("pathHostBoardRaw: " + pathHostBoardRaw);
+            document.getElementById("pathBoard").value = jsonService.pathBoard;
+            folderQml = jsonService.folder;
             saveInfo();
             return true;
         }
     }
     return true;
+}
+
+function pathSrcUpdate() {
+    document.getElementById("pathSrc").value = document.getElementById("pathSrc").value.replace(/\\/g,'/');
+}
+
+function updStr(str, arg) {
+    return str.replace("[%1]", arg);
 }
 
 function doCopy() {
@@ -106,57 +124,96 @@ function doCopy() {
     return true;
 }
 
-function firstLogin() {
+function boardLogin() {
     saveInfo();
-    var webOsSelect = document.getElementById("webOsSelect").value;
     var boardIP = document.getElementById("boardIP").value;
     var boardUser = document.getElementById("boardUser").value;
     var boardPort = document.getElementById("boardPort").value;
-    var idRsaPub = readFile(pathIdRsaPub).replace('\r','').replace('\n','');
-    var fileKnowHost = readFile(pathKnowHost).replace(new RegExp(".*" + boardIP + ".*"),'');
-    writeFile(pathKnowHost, fileKnowHost);
-    var command = "ssh -p " + boardPort + " " + boardUser + "@" + boardIP +" 'mkdir /home/root/.ssh; echo \'" + idRsaPub + "\' >> /home/root/.ssh/authorized_keys'";
-    RunBashCommand(command);
-    alert("firstLogin");
+    connectAuthy(boardIP, boardUser, boardPort);
+}
+
+function connectAuthy(ip, user, port) {
+    if(port=="") {
+        port = "22";
+    }
+    var command = "";
+    var idRsaPub = readFile(updStr(pathIdRsaPub, usename)).replace(/\r|\n/g,'');
+    var patternUsrAuthen = idRsaPub.split(' ').pop();
+    var patternSSHAuthen = idRsaPub.split(' ')[0];
+
+    // clear knowhost 
+    if(port=="22") {
+        command = "sed -i '/" + ip + " " + patternSSHAuthen + " /d' '" + updStr(pathKnowHost, usename) + "'";
+        RunBashCommand(command);
+    } else {
+        command = "sed -i '/\\[" + ip + "\\]:" + port + " " + patternSSHAuthen + " /d' '" + updStr(pathKnowHost, usename) + "'";
+        RunBashCommand(command);
+    }
+    // update  authorized_keys
+    command = "mkdir " + updStr(pathBoardSSHfolder,user) + "; echo \\\"" + idRsaPub + "\\\" >> " + updStr(pathBoardAuthenkey,user);
+    RunBashSSHCommand(command);
+    // clear dupplicate  authorized_keys
+    command = "sed -i \\\"/ " + patternUsrAuthen + "/d\\\" " + updStr(pathBoardAuthenkey,user) + "; echo \\\"" + idRsaPub + "\\\" >> " + updStr(pathBoardAuthenkey,user);
+    RunBashSSHCommand(command);
 }
 
 function copy2Local() {
     saveInfo();
+    var command = "";
     var boardIP = document.getElementById("boardIP").value;
     var boardUser = document.getElementById("boardUser").value;
     var boardPort = document.getElementById("boardPort").value;
     var pathSrc = document.getElementById("pathSrc").value;
     var webOsSelect = document.getElementById("webOsSelect").value;
-    var pathHostBoard = pathHostBoardRaw.replace('[%WEBOS]',webOsSelect);
-    var command = "scp -O -P " + boardPort + " -r " + boardUser + "@" + boardIP +":" + pathHostBoard + " " + pathSrc + "";
-    RunBashCommand(command);
+    // mount
+    RunBashSSHCommand("lxc-attach -n " + webOsSelect + "; mount -o rw,remount /");
+    // clear temp
+    RunBashSSHCommand("rm -rf " + updStr(pathLogCCOS,webOsSelect) + "; mkdir " + updStr(pathLogCCOS,webOsSelect));
+    // clear local qml
+    RunBashCommand("rm -rf " + pathSrc + folderQml);
+    // cp webos to ccos
+    RunBashSSHCommand("lxc-attach -n " + webOsSelect + "; cp -rf " + pathBoard + folderQml + " " + pathLogWEBOS);
+    // cp ccos to local
+    RunBashScpCommand(boardPort, boardUser + "@" + boardIP +":" + updStr(pathLogCCOS,webOsSelect) + folderQml, pathSrc);
     alert("copy2Local");
 }
 
 function copy2Board() {
     saveInfo();
+    var command = "";
     var boardIP = document.getElementById("boardIP").value;
     var boardUser = document.getElementById("boardUser").value;
     var boardPort = document.getElementById("boardPort").value;
     var pathSrc = document.getElementById("pathSrc").value;
     var webOsSelect = document.getElementById("webOsSelect").value;
-    var pathHostBoard = pathHostBoardRaw.replace('[%WEBOS]',webOsSelect);
-    var commandRM = "ssh -p " + boardPort + " " + boardUser + "@" + boardIP +" 'rm -r " + pathHostBoard + "'";
-    RunBashCommand(commandRM);
-    var commandCP = "scp -O -P " + boardPort + " -r " + pathSrc + " "  + boardUser + "@" + boardIP +":" + pathHostBoard;
-    RunBashCommand(commandCP);
+    // mount
+    RunBashSSHCommand("lxc-attach -n " + webOsSelect + "; mount -o rw,remount /");
+    // clear temp
+    RunBashSSHCommand("rm -rf " + updStr(pathLogCCOS,webOsSelect) + "; mkdir " + updStr(pathLogCCOS,webOsSelect));
+    // clear board qml
+    RunBashSSHCommand("lxc-attach -n " + webOsSelect + "; rm -rf " + pathBoard + folderQml);
+    // cp local to ccos
+    RunBashScpCommand(boardPort, pathSrc + folderQml, boardUser + "@" + boardIP +":" + updStr(pathLogCCOS,webOsSelect));
+    // cp ccos to webos
+    RunBashSSHCommand("lxc-attach -n " + webOsSelect + "; cp -rf " + updStr(pathLogCCOS,webOsSelect) + folderQml + " " + pathLogWEBOS);
+    // restart sam
+    RunBashSSHCommand("restart sam");
     alert("copy2Board");
 }
 
-function copy2BoardFast() {
+function downLog() {
     saveInfo();
+    var command = "";
     var boardIP = document.getElementById("boardIP").value;
     var boardUser = document.getElementById("boardUser").value;
     var boardPort = document.getElementById("boardPort").value;
     var pathSrc = document.getElementById("pathSrc").value;
     var webOsSelect = document.getElementById("webOsSelect").value;
-    var pathHostBoard = pathHostBoardRaw.replace('[%WEBOS]',webOsSelect);
-    var command = "scp -O -P " + boardPort + " -r " + pathSrc + " "  + boardUser + "@" + boardIP +":" + pathHostBoard;
-    RunBashCommand(command);
-    return true;
+    // mount
+    RunBashSSHCommand("lxc-attach -n " + webOsSelect + "; mount -o rw,remount /");
+    // cp ccos to local
+    RunBashScpCommand(boardPort, boardUser + "@" + boardIP +":" + updStr(pathLogCCOSHomeLog,webOsSelect), pathSrc);
+    RunBashScpCommand(boardPort, boardUser + "@" + boardIP +":" + updStr(pathLogCCOSMessageLog,webOsSelect), pathSrc);
+    alert("copy2Local");
 }
+

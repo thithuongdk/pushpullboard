@@ -48,7 +48,7 @@
                         <input class="textInput" type="text" id="boardUser" value=""/>
                         <label for="boardPort">Port:</label>
                         <input class="textInput" type="text" id="boardPort" value=""/>
-                        <button onclick="firstLogin()" title="input pw and edit keyauthen" id="firstLogin" class="bigButton">Connect</button>
+                        <button onclick="boardLogin()" title="input pw and edit keyauthen when first connect" id="btnBoardLogin" class="bigButton">Board Auth</button>
                     </td>
                 </tr>
             </table>
@@ -57,20 +57,20 @@
             <h2>push qml to Board</h2>
             <table id="infoTable">
                 <tr>
-                    <td><label for="pathSrc">Local Source:</label></td>
-                    <td><input class="textInput" type="text" id="pathSrc" value=""/></td>
+                    <td><label for="pathBoard">path Src board:</label></td>
+                    <td><input class="textInput" type="text" id="pathBoard" value=""/></td>
                 </tr>
                 <tr>
                     <td></td>
                     <td>
-                        <button onclick="copy2Local()" title="copy board to local" id="btnCP2Local" class="bigButton">↑</button>
-                        <button onclick="copy2Board()" title="delete all and copy to board" id="btnCP2Board" class="bigButton">↓</button>
-                        <button onclick="copy2BoardFast()" title="fast copy to board" id="btnCP2BoardFast" class="bigButton">↓↓</button>
+                        <button onclick="copy2Local()" title="copy board to local" id="btnCP2Local" class="bigButton">↓</button>
+                        <button onclick="copy2Board()" title="copy local to board" id="btnCP2Board" class="bigButton">↑</button>
+                        <button onclick="downLog()" title="copy log to local" id="btnDownLog" class="bigButton">Log</button>
                     </td>
                 </tr>
                 <tr>
-                    <td><label for="pathBoard">Board Source:</label></td>
-                    <td><input class="textInput" type="text" id="pathBoard" value=""/></td>
+                    <td><label for="pathSrc">path Src local:</label></td>
+                    <td><input class="textInput" type="text" id="pathSrc" value="" onchange="pathSrcUpdate()"/></td>
                 </tr>
             </table>
         </div>
